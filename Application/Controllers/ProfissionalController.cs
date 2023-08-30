@@ -29,6 +29,20 @@ namespace Application.Controllers
             }
         }
 
+        [HttpGet("BuscaPorUsuarioId")]
+        public IActionResult BuscaPorUsuarioId(int idUsuario)
+        {
+            try
+            {
+                Profissional profissional = _repository.BuscarPorUsuarioId(idUsuario);
+                return Ok(profissional);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("BuscarTodos")]
         public IActionResult BuscarTodos()
         {

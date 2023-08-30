@@ -1,4 +1,5 @@
 ﻿using Application.Models;
+using Application.Utils;
 
 namespace Application.Data.Repositories
 {
@@ -42,6 +43,8 @@ namespace Application.Data.Repositories
             {
                 throw new Exception("Username já cadastrado");
             }
+
+            usuario.Senha = PasswordService.HashPassword(usuario.Senha);
 
             _context.Usuario.Add(usuario);
             _context.SaveChanges();

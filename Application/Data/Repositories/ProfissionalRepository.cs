@@ -29,6 +29,12 @@ namespace Application.Data.Repositories
             return profissional;
         }
 
+        public Profissional BuscarPorUsuarioId(int idUsuario)
+        {
+            Profissional profissional = _context.Profissional.FirstOrDefault(u => u.IdUsuario == idUsuario) ?? new Profissional();
+            return profissional;
+        }
+
         public void Cadastrar(Profissional profissional)
         {
             // Verifica se o email e o username já estão cadastrados

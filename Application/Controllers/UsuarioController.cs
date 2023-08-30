@@ -1,5 +1,10 @@
-﻿using Application.Data.Repositories;
+﻿using Application.Configuration.Utils;
+using Application.Data.Entities;
+using Application.Data.Repositories;
 using Application.Models;
+using Application.Models.Requests;
+using Application.Models.Responses;
+using Application.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +15,11 @@ namespace Application.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly UsuarioRepository _repository;
-        public UsuarioController(UsuarioRepository usuarioRepository)
+        private readonly TokenRepository _tokenRepository;
+        public UsuarioController(UsuarioRepository usuarioRepository, TokenRepository tokenRepository)
         {
             _repository = usuarioRepository;
+            _tokenRepository = tokenRepository;
         }
 
         [HttpGet("BuscaPorId")]
@@ -57,16 +64,81 @@ namespace Application.Controllers
             }   
         }
 
-        [HttpGet("Login")]
-        public IActionResult Login(string email, string password)
+        [HttpPost("Login")]
+        public IActionResult Login(LoginRequest loginReq)
         {
-            var usuarioEmail = _repository.BuscarPorEmail(email);
-            if (String.IsNullOrEmpty(usuarioEmail.Username))
+            var usuario = _repository.BuscarPorEmail(loginReq.Email);
+            if (String.IsNullOrEmpty(usuario.Username))
             {
                 return BadRequest("Email não cadastrado");
             }
-            bool senhaCorreta = usuarioEmail.Senha == password;
-            return senhaCorreta ? Ok(usuarioEmail) : BadRequest("Senha incorreta");
+            bool senhaCorreta = PasswordService.VerifyPassword(loginReq.Password, usuario.Senha);
+            if(senhaCorreta)
+            {
+                UserTokenTO userToken = _tokenRepository.CreateToken(usuario);
+                usuario.Token = userToken.AccessToken;
+                return Ok(usuario);
+            }
+            return BadRequest("Senha incorreta");
+        }
+
+        [HttpPost("LoginByToken")]
+        public IActionResult Login(string token)
+        {
+            try
+            {
+                // First of all, we're going to check if the token exists and if it's not expired
+                TokenManager tokenManager = new TokenManager();
+                UserTokenTO userToken = _tokenRepository.GetTokenByCode(token);
+                if (userToken.Id == 0)
+                {
+                    return BadRequest("Token inválido");
+                }
+
+                if (tokenManager.AccessTokenIsExpired(userToken))
+                {
+                    if(!tokenManager.RefreshTokenIsExpired(userToken))
+                    {
+                        // If the access token is expired, but the refresh token is not, we're going to generate a new access token
+                        UserTokenTO newToken = _tokenRepository.UpdateToken(userToken.RefreshToken);
+                        if (newToken.Id == 0)
+                        {
+                            return BadRequest("Token inválido");
+                        }
+                        else
+                        {
+                            Usuario usuario = _repository.BuscarPorId(newToken.UserId);
+                            if (String.IsNullOrEmpty(usuario.Username))
+                            {
+                                return BadRequest("Usuário não encontrado");
+                            }
+                            else
+                            {
+                                usuario.Token = newToken.AccessToken;
+                                return Ok(usuario);
+                            }
+                        }
+                    }
+
+                    return BadRequest("Token expirado");
+                } else
+                {
+                    Usuario usuario = _repository.BuscarPorId(userToken.UserId);
+                    if (String.IsNullOrEmpty(usuario.Username))
+                    {
+                        return BadRequest("Usuário não encontrado");
+                    }
+                    else
+                    {
+                        return Ok(usuario);
+                    }
+                }
+
+                
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("Registrar")]
@@ -75,11 +147,21 @@ namespace Application.Controllers
             try
             {
                 _repository.Cadastrar(usuario);
-                return Ok();
+                AiResponse aiResponse = new AiResponse()
+                {
+                    code = 200,
+                    message = "Cadastro realizado com sucesso!"
+                };
+                return Ok(aiResponse);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                AiResponse aiResponse = new AiResponse()
+                {
+                    code = 400,
+                    message = ex.Message
+                };
+                return BadRequest(aiResponse);
             }
         }
 

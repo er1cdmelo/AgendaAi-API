@@ -20,5 +20,8 @@ namespace Application.Models
         public string Email { get; set; }
         public string Username { get; set; }
         public string Senha { get; set; }
+
+        [NotMapped]
+        public string Token { get; set; }
     }
 }

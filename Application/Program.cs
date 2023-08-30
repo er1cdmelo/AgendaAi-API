@@ -25,7 +25,9 @@ builder.Services.AddDbContext<AgendaContext>(options =>
 
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<ProfissionalRepository>();
+builder.Services.AddScoped<TokenRepository>();
 builder.Services.AddScoped<SettingsManager>();
+builder.Services.AddScoped<TokenManager>();
 builder.Services.AddScoped<AuthorizationMiddleware>();
 builder.Services.AddHangfire(configuration => configuration
                 .UseRecommendedSerializerSettings()

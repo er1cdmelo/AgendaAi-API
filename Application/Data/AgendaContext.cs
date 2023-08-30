@@ -1,4 +1,5 @@
-﻿using Application.Models;
+﻿using Application.Data.Entities;
+using Application.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data
@@ -11,6 +12,7 @@ namespace Application.Data
         }
 
         public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<UserTokenTO> UserToken { get; set; }
         public DbSet<Profissional> Profissional { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -77,6 +79,45 @@ namespace Application.Data
                 p.HasOne(p => p.Usuario) // Profissional tem um Usuário
                 .WithOne() // Sem navegação inversa, pois um Usuário não precisa apontar para um Profissional
                 .HasForeignKey<Profissional>(p => p.IdUsuario);
+            });
+
+            modelBuilder.Entity<UserTokenTO>(u =>
+            {
+                u.HasKey(us => us.Id);
+
+                u.Property(us => us.AccessToken)
+                .IsRequired()
+                .HasMaxLength(300)
+                .HasColumnType("nvarchar");
+
+                u.Property(us => us.RefreshToken)
+                .IsRequired()
+                .HasMaxLength(300)
+                .HasColumnType("nvarchar");
+
+                u.Property(us => us.TokenType)
+                .IsRequired()
+                .HasColumnType("varchar")
+                .HasMaxLength(20);
+
+                u.Property(us => us.ExpiresIn)
+                .IsRequired()
+                .HasColumnType("int");
+
+                u.Property(us => us.UserId)
+                .IsRequired()
+                .HasColumnType("int");
+
+                u.Property(us => us.CreatedAt)
+                .IsRequired()
+                .HasColumnType("datetimeoffset");
+
+                u.Property(us => us.UpdatedAt)
+                .HasColumnType("datetimeoffset");
+
+                u.Property(us => us.Scope)
+                .HasColumnType("nvarchar")
+                .HasMaxLength(100);
             });
 
             base.OnModelCreating(modelBuilder);
