@@ -130,6 +130,7 @@ namespace Application.Controllers
                     }
                     else
                     {
+                        usuario.Token = "";
                         return Ok(usuario);
                     }
                 }
