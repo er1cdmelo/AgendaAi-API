@@ -31,5 +31,6 @@ namespace Application.Domain.Entities
         [NotMapped]
         public string RefreshToken { get; set; }
         public virtual Profissional Profissional { get; set; }
+        public virtual Cliente Cliente { get; set; }
     }
 }

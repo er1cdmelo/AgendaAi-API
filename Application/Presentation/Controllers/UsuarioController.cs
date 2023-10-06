@@ -5,7 +5,9 @@ using Application.Domain.Entities;
 using Application.Infra.DTO;
 using Application.Models.Requests;
 using Application.Models.Responses;
+using Application.Presentation.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Application.Presentation.Controllers
 {
@@ -14,11 +16,11 @@ namespace Application.Presentation.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly UsuarioAppServices _userApp;
-        private readonly TokenAppServices _tokenApp;
-        public UsuarioController(UsuarioAppServices userApp, TokenAppServices tokenApp)
+        private readonly ClienteAppServices _clienteApp;
+        public UsuarioController(UsuarioAppServices userApp, ClienteAppServices clienteApp)
         {
             _userApp = userApp;
-            _tokenApp = tokenApp;
+            _clienteApp = clienteApp;
         }
 
         [HttpGet("BuscaPorId")]
@@ -82,56 +84,8 @@ namespace Application.Presentation.Controllers
         {
             try
             {
-                // First of all, we're going to check if the token exists and if it's not expired
-                TokenManager tokenManager = new TokenManager();
-                UserTokenTO userToken = _tokenApp.GetByCode(tokenLogin);
-                if (userToken.Id == 0)
-                {
-                    return BadRequest("Token inválido");
-                }
-
-                if (tokenManager.AccessTokenIsExpired(userToken))
-                {
-                    if(!tokenManager.RefreshTokenIsExpired(userToken))
-                    {
-                        UserTokenTO newToken = _tokenApp.UpdateToken(userToken.RefreshToken);
-                        if (newToken.Id == 0)
-                        {
-                            return BadRequest("Token inválido");
-                        }
-                        else
-                        {
-                            Usuario usuario = _userApp.BuscarPorId(newToken.UserId);
-                            if (String.IsNullOrEmpty(usuario.Username))
-                            {
-                                return BadRequest("Usuário não encontrado");
-                            }
-                            else
-                            {
-                                usuario.Token = newToken.AccessToken;
-                                usuario.RefreshToken = newToken.RefreshToken;
-                                return Ok(usuario);
-                            }
-                        }
-                    }
-
-                    return BadRequest("Token expirado");
-                } else
-                {
-                    Usuario usuario = _userApp.BuscarPorId(userToken.UserId);
-                    if (String.IsNullOrEmpty(usuario.Username))
-                    {
-                        return BadRequest("Usuário não encontrado");
-                    }
-                    else
-                    {
-                        usuario.Token = string.Empty;
-                        usuario.RefreshToken = string.Empty;
-                        return Ok(usuario);
-                    }
-                }
-
-                
+                Usuario? usuario = _userApp.Login(tokenLogin);
+                return usuario != null ? Ok(usuario) : BadRequest();
             } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
@@ -139,13 +93,14 @@ namespace Application.Presentation.Controllers
         }
 
         [HttpPost("Registrar")]
-        public IActionResult RegistrarUsuario(Usuario usuario)
+        public IActionResult RegistrarUsuario(UsuarioRegistroVM usuario)
         {
             try
             {
-                _userApp.Cadastrar(usuario);
+                Usuario usuarioCadastrado = _userApp.Cadastrar(usuario);
                 AiResponse aiResponse = new AiResponse()
                 {
+                    data = JsonConvert.SerializeObject(usuarioCadastrado),
                     code = 200,
                     message = "Cadastro realizado com sucesso!"
                 };

@@ -7,9 +7,6 @@ namespace Application.Domain.Entities
         public Agendamento()
         {
             DsServico = string.Empty;
-            Usuario = new Usuario();
-            Profissional = new Profissional();
-            HorarioDisponivel = new HorarioDisponivel();
         }
         public int IdAgendamento { get; set; }
         public int IdCliente { get; set; }
@@ -20,7 +17,7 @@ namespace Application.Domain.Entities
         public int Status { get; set; }
         public string DsServico { get; set; }
 
-        public virtual Usuario Usuario { get; set; }
+        public virtual Cliente Cliente { get; set; }
         public virtual Profissional Profissional { get; set; }
         public virtual HorarioDisponivel HorarioDisponivel { get; set; }
     }

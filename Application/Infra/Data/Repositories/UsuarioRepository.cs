@@ -1,6 +1,7 @@
 ﻿using Application.Application.AppServices;
 using Application.Data.Entities;
 using Application.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data.Repositories
 {
@@ -21,13 +22,30 @@ namespace Application.Data.Repositories
         public Usuario BuscarPorId(int idUsuario)
         {
             // O nome da tabela de Usuarios é Usuario
-            Usuario usuario = _context.Usuario.FirstOrDefault(u => u.IdUsuario == idUsuario) ?? new Usuario();
+            Usuario usuario = _context.Usuario.Include(u => u.Profissional).Include(u => u.Cliente)
+                .FirstOrDefault(u => u.IdUsuario == idUsuario) ?? new Usuario();
+            if(usuario.Cliente != null)
+            {
+                usuario.Cliente.Usuario = null;
+            }
+            if(usuario.Profissional != null)
+            {
+                usuario.Profissional.Usuario = null;
+            }
             return usuario;
         }
 
         public Usuario BuscarPorEmail(string email)
         {
-            Usuario usuario = _context.Usuario.FirstOrDefault(u => u.Email == email) ?? new Usuario();
+            Usuario usuario = _context.Usuario.Include(u => u.Profissional).Include(u => u.Cliente).FirstOrDefault() ?? new Usuario();
+            if (usuario.Cliente != null)
+            {
+                usuario.Cliente.Usuario = null;
+            }
+            if (usuario.Profissional != null)
+            {
+                usuario.Profissional.Usuario = null;
+            }
             return usuario;
         }
 

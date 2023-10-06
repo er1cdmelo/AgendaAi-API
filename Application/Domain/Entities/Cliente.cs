@@ -11,6 +11,7 @@ namespace Application.Domain.Entities
             Cpf = string.Empty;
             Cidade = string.Empty;
             Estado = string.Empty;
+            Telefone = string.Empty;
         }
         public int IdCliente { get; set; }
         public int IdUsuario { get; set; }
@@ -20,6 +21,8 @@ namespace Application.Domain.Entities
         public DateTimeOffset DtNascimento { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+        public string Telefone { get; set; }
         public virtual Usuario Usuario { get; set; }
+        public virtual List<Agendamento> Agendamentos { get; set; }
     }
 }

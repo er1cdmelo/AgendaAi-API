@@ -1,5 +1,6 @@
 ﻿using Application.Domain.Entities;
 using Application.Infra.DTO;
+using Application.Presentation.ViewModels;
 using AutoMapper;
 
 namespace Application.Data.Mapper
@@ -10,6 +11,7 @@ namespace Application.Data.Mapper
         {
             CreateMap<Usuario, UsuarioTO>();
             CreateMap<UsuarioTO, Usuario>();
+            CreateMap<UsuarioClienteVM, Usuario>();
         }
     }
 }

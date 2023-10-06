@@ -3,6 +3,7 @@ using Application.Data.Entities;
 using Application.Infra.DTO;
 using Application.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Application.Presentation.Controllers
 {
@@ -16,18 +17,37 @@ namespace Application.Presentation.Controllers
         {
             _agendamentoApp = agendamentoApp;
             _profissionalApp = profissionalApp;
-
         }
 
         [HttpGet("BuscarPorProfissional")]
-        public IActionResult BuscarPorProfissional(int idProfissional)
+        public IActionResult BuscarPorProfissional(int idPessoa)
         {
             try
             {
-                List<AgendamentoTO> agendamentos = _agendamentoApp.BuscarListaProfissional(idProfissional);
+                List<AgendamentoTO> agendamentos = _agendamentoApp.BuscarListaProfissional(idPessoa);
                 AiResponse response = new AiResponse()
                 {
-                    data = agendamentos,
+                    data = JsonConvert.SerializeObject(agendamentos),
+                    message = "Agendamentos encontrados com sucesso!",
+                    code = 200
+                };
+                return Ok(agendamentos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("BuscarPorCliente")]
+        public IActionResult BuscarPorCliente(int idPessoa)
+        {
+            try
+            {
+                List<AgendamentoTO> agendamentos = _agendamentoApp.BuscarListaCliente(idPessoa);
+                AiResponse response = new AiResponse()
+                {
+                    data = JsonConvert.SerializeObject(agendamentos),
                     message = "Agendamentos encontrados com sucesso!",
                     code = 200
                 };
@@ -50,7 +70,7 @@ namespace Application.Presentation.Controllers
                     .Where(h => h.DtHora > DateTimeOffset.Now).ToList();
                 AiResponse response = new AiResponse()
                 {
-                    data = horariosDisponiveis,
+                    data = JsonConvert.SerializeObject(horariosDisponiveis),
                     message = "Horários disponíveis encontrados com sucesso!",
                     code = 200
                 };
@@ -60,7 +80,6 @@ namespace Application.Presentation.Controllers
             {
                 AiResponse response = new AiResponse()
                 {
-                    data = null,
                     message = ex.Message,
                     code = 400
                 };
@@ -79,7 +98,7 @@ namespace Application.Presentation.Controllers
                     .Where(h => h.DtHora > agora).ToList();
                 AiResponse response = new AiResponse()
                 {
-                    data = horariosDisponiveis,
+                    data = JsonConvert.SerializeObject(horariosDisponiveis),
                     message = "Horários disponíveis encontrados com sucesso!",
                     code = 200
                 };
@@ -90,7 +109,6 @@ namespace Application.Presentation.Controllers
             {
                 AiResponse response = new AiResponse()
                 {
-                    data = null,
                     message = ex.Message,
                     code = 400
                 };

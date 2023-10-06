@@ -1,8 +1,9 @@
-﻿using Application.Data.Global;
+﻿using Application.Application.Global;
 using Application.Data.Repositories;
 using Application.Domain.Entities;
 using Application.Infra.DTO;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Application.AppServices
 {
@@ -20,7 +21,8 @@ namespace Application.Application.AppServices
 
         public List<AgendamentoTO> BuscarListaProfissional(int idProfissional)
         {
-            List<Agendamento> agendamentos = _repository.BuscarAgendamentosProfissional(idProfissional);
+            List<Agendamento> agendamentos = _repository.BuscarAgendamentosProfissional(idProfissional)
+                .Where(a => a.DtAgendamento > DateTimeOffset.Now).ToList();
             List<AgendamentoTO> agendamentosTO = new List<AgendamentoTO>();
             if(agendamentos != null && agendamentos.Any())
             {

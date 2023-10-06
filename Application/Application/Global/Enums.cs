@@ -1,4 +1,4 @@
-﻿namespace Application.Data.Global
+﻿namespace Application.Application.Global
 {
     public class Enums
     {

@@ -9,6 +9,7 @@ using Hangfire;
 using Application.Presentation.Controllers;
 using Application.Application.AppServices;
 using Application.Application.Data.Mapper;
+using Application.Infra.Data.Repositories;
 
 namespace Application.Configuration.Services
 {
@@ -22,12 +23,14 @@ namespace Application.Configuration.Services
 
             var connString = configuration.GetConnectionString("DefaultConnection");
 
+            // Hangfire
             services.AddHangfire(x => x.UseSqlServerStorage(connString));
             services.AddDbContext<AgendaContext>(options =>
             {
                 options.UseSqlServer(connString);
             });
 
+            // AutoMapper
             var mapper = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new ProfissionalProfile());
@@ -40,25 +43,33 @@ namespace Application.Configuration.Services
             });
             services.AddSingleton(mapper.CreateMapper());
 
+            // Repositories
             services.AddScoped<UsuarioRepository>();
             services.AddScoped<ProfissionalRepository>();
             services.AddScoped<PreferenciaRepository>();
             services.AddScoped<TokenRepository>();
             services.AddScoped<AgendamentoRepository>();
+            services.AddScoped<ClienteRepository>();
 
+            // Utils
             services.AddScoped<SettingsManager>();
             services.AddScoped<TokenManager>();
             services.AddScoped<AuthorizationMiddleware>();
 
+            // AppServices
             services.AddScoped<UsuarioAppServices>();
             services.AddScoped<ProfissionalAppServices>();
             services.AddScoped<PreferenciaAppServices>();
             services.AddScoped<PasswordAppServices>();
             services.AddScoped<AgendamentoAppServices>();
+            services.AddScoped<TokenAppServices>();
+            services.AddScoped<ClienteAppServices>();
 
+            // Controllers
             services.AddScoped<ProfissionalController>();
             services.AddScoped<UsuarioController>();
             services.AddScoped<AgendamentoController>();
+            services.AddScoped<ClienteController>();
         }
     }
 }

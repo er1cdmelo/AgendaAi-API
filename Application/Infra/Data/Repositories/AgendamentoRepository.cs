@@ -1,6 +1,7 @@
-﻿using Application.Data.Entities;
-using Application.Data.Global;
+﻿using Application.Application.Global;
+using Application.Data.Entities;
 using Application.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Data.Repositories
 {
@@ -16,7 +17,12 @@ namespace Application.Data.Repositories
         {
             try
             {
-                List<Agendamento> agendamentos = _context.Agendamento.Where(a => a.IdProfissional == idProfissional).ToList();
+                List<Agendamento> agendamentos = _context.Agendamento.Where(a => a.IdProfissional == idProfissional).Include(a => a.Cliente).ToList().Select(a =>
+                {
+                    var agendamento = a;
+                    a.Cliente.Agendamentos.Clear();
+                    return a;
+                }).ToList();
                 return agendamentos;
             }
             catch (Exception)
@@ -29,7 +35,12 @@ namespace Application.Data.Repositories
         {
             try
             {
-                List<Agendamento> agendamentos = _context.Agendamento.Where(a => a.IdCliente == idCliente).ToList();
+                List<Agendamento> agendamentos = _context.Agendamento.Where(a => a.IdCliente == idCliente).Include(a => a.Profissional).ToList().Select(a =>
+                {
+                    var agendamento = a;
+                    a.Profissional.Agendamentos.Clear();
+                    return a;
+                }).ToList();
                 return agendamentos;
             }
             catch (Exception)

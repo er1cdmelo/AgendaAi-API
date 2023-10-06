@@ -15,7 +15,7 @@ namespace Application.Data.Entities
             Estado = string.Empty;
             ImagemPerfil = string.Empty;
             HorariosDisponiveis = new List<HorarioDisponivel>();
-            Usuario = new Usuario();
+            Agendamentos = new List<Agendamento>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // auto increment
@@ -28,7 +28,8 @@ namespace Application.Data.Entities
         public string Estado { get; set; }
         public int CdIdentificacao { get; set; }
         public string? ImagemPerfil { get; set; }
-        public List<HorarioDisponivel> HorariosDisponiveis { get; set; }
+        public virtual List<HorarioDisponivel> HorariosDisponiveis { get; set; }
+        public virtual List<Agendamento> Agendamentos { get; set; }
         public virtual Usuario Usuario { get; set; }
     }
 }

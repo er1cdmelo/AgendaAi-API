@@ -24,6 +24,11 @@ namespace Application.Data
         public DbSet<HorarioDisponivel> HorarioDisponivel { get; set; }
         public DbSet<UserToken> UserToken { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //optionsBuilder.UseLazyLoadingProxies(); // Habilita o lazy loading
+            base.OnConfiguring(optionsBuilder);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Usuario>(u => {
@@ -89,8 +94,6 @@ namespace Application.Data
                 .WithOne(u => u.Profissional)
                 .HasForeignKey<Profissional>(p => p.IdUsuario)
                 .OnDelete(DeleteBehavior.Cascade);
-
-                
             });
             
             modelBuilder.Entity<Cliente>(c =>
@@ -126,16 +129,14 @@ namespace Application.Data
                 .HasMaxLength(2)
                 .HasColumnType("varchar");
 
-                c.HasOne(c => c.Usuario)
-                .WithOne()
-                .HasForeignKey<Cliente>(c => c.IdUsuario)
-                .OnDelete(DeleteBehavior.Cascade);
+                c.Property(cl => cl.Telefone)
+                .HasMaxLength(18)
+                .HasColumnType("varchar");
 
-                modelBuilder.Entity<Profissional>()
-                .HasMany(p => p.HorariosDisponiveis)
-                .WithOne()
-                .HasForeignKey(hd => hd.IdProfissional)
-                .IsRequired(false);
+                c.HasOne(c => c.Usuario)
+                .WithOne(u => u.Cliente)
+                .HasForeignKey<Cliente>(p => p.IdUsuario)
+                .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<UserToken>(u =>
@@ -213,42 +214,33 @@ namespace Application.Data
                 .IsRequired()
                 .HasColumnType("datetimeoffset");
 
-                a.Property(ag => ag.IdDataHora)
-                .IsRequired()
-                .HasColumnType("int");
-
                 a.Property(ag => ag.Status)
                 .IsRequired()
-                .HasColumnType("varchar")
-                .HasMaxLength(20);
+                .HasColumnType("int");
 
                 a.Property(ag => ag.DsServico)
                 .HasColumnType("varchar")
                 .HasMaxLength(80);
 
-                a.HasOne(ag => ag.Usuario)
-                 .WithMany()
-                 .HasForeignKey(ag => ag.IdCliente)
-                 .IsRequired(false);
-
                 a.HasOne(ag => ag.Profissional)
-                .WithMany()
-                    .HasForeignKey(ag => ag.IdProfissional)
-                    .IsRequired(false);
+                .WithMany(p => p.Agendamentos)
+                .HasForeignKey(ag => ag.IdProfissional)
+                .IsRequired(false);
 
                 a.HasOne(ag => ag.HorarioDisponivel)
                 .WithOne()
                 .HasForeignKey<Agendamento>(ag => ag.IdDataHora)
+                .IsRequired(false);
+
+                a.HasOne(ag => ag.Cliente)
+                .WithMany(c => c.Agendamentos)
+                .HasForeignKey(ag => ag.IdCliente)
                 .IsRequired(false);
             });
 
             modelBuilder.Entity<HorarioDisponivel>(h =>
             {
                 h.HasKey(hd => hd.Id);
-
-                h.Property(hd => hd.IdProfissional)
-                .IsRequired()
-                .HasColumnType("int");
 
                 h.Property(hd => hd.DtHora)
                 .IsRequired()
@@ -259,9 +251,8 @@ namespace Application.Data
                 .HasColumnType("varchar")
                 .HasMaxLength(20);
 
-                modelBuilder.Entity<HorarioDisponivel>()
-                .HasOne<Profissional>()
-                .WithMany()
+                h.HasOne(hd => hd.Profissional)
+                .WithMany(p => p.HorariosDisponiveis)
                 .HasForeignKey(hd => hd.IdProfissional)
                 .IsRequired(false);
             });

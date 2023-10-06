@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Application.Migrations
 {
     /// <inheritdoc />
-    public partial class recomecando : Migration
+    public partial class vamovesevaisapoar : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,6 +66,31 @@ namespace Application.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cliente",
+                columns: table => new
+                {
+                    IdCliente = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    Nome = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    Sexo = table.Column<string>(type: "varchar(1)", maxLength: 1, nullable: false),
+                    Cpf = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: false),
+                    DtNascimento = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Cidade = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    Estado = table.Column<string>(type: "varchar(2)", maxLength: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cliente", x => x.IdCliente);
+                    table.ForeignKey(
+                        name: "FK_Cliente_Usuario_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuario",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Profissional",
                 columns: table => new
                 {
@@ -99,7 +124,7 @@ namespace Application.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdProfissional = table.Column<int>(type: "int", nullable: false),
                     DtHora = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
+                    Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -108,8 +133,7 @@ namespace Application.Migrations
                         name: "FK_HorarioDisponivel_Profissional_IdProfissional",
                         column: x => x.IdProfissional,
                         principalTable: "Profissional",
-                        principalColumn: "IdProfissional",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdProfissional");
                 });
 
             migrationBuilder.CreateTable(
@@ -130,6 +154,11 @@ namespace Application.Migrations
                 {
                     table.PrimaryKey("PK_Agendamento", x => x.IdAgendamento);
                     table.ForeignKey(
+                        name: "FK_Agendamento_Cliente_IdCliente",
+                        column: x => x.IdCliente,
+                        principalTable: "Cliente",
+                        principalColumn: "IdCliente");
+                    table.ForeignKey(
                         name: "FK_Agendamento_HorarioDisponivel_IdDataHora",
                         column: x => x.IdDataHora,
                         principalTable: "HorarioDisponivel",
@@ -139,11 +168,6 @@ namespace Application.Migrations
                         column: x => x.IdProfissional,
                         principalTable: "Profissional",
                         principalColumn: "IdProfissional");
-                    table.ForeignKey(
-                        name: "FK_Agendamento_Usuario_IdCliente",
-                        column: x => x.IdCliente,
-                        principalTable: "Usuario",
-                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateIndex(
@@ -161,6 +185,12 @@ namespace Application.Migrations
                 name: "IX_Agendamento_IdProfissional",
                 table: "Agendamento",
                 column: "IdProfissional");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cliente_IdUsuario",
+                table: "Cliente",
+                column: "IdUsuario",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_HorarioDisponivel_IdProfissional",
@@ -185,6 +215,9 @@ namespace Application.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserToken");
+
+            migrationBuilder.DropTable(
+                name: "Cliente");
 
             migrationBuilder.DropTable(
                 name: "HorarioDisponivel");

@@ -1,4 +1,5 @@
 ﻿using Application.Data.Repositories;
+using Application.Domain.Entities;
 using Application.Infra.DTO;
 using Application.Models.Requests;
 using AutoMapper;
@@ -24,6 +25,12 @@ namespace Application.Application.AppServices
         public UserTokenTO UpdateToken(string refreshToken)
         {
             UserTokenTO token = _repository.UpdateToken(refreshToken);
+            return token;
+        }
+
+        public UserTokenTO CreateToken(Usuario usuario)
+        {
+            UserTokenTO token = _repository.CreateToken(usuario);
             return token;
         }
     }

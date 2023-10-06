@@ -4,6 +4,7 @@ using Application.Domain.Entities;
 using Application.Models.Responses;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Application.Presentation.Controllers
 {
@@ -96,7 +97,7 @@ namespace Application.Presentation.Controllers
                 {
                     code = 200,
                     message = String.Format("Profissional cadastrado com sucesso. A senha inicial é {0}.", result),
-                    data = profissionalVM,
+                    data = JsonConvert.SerializeObject(profissionalVM),
                     errors = new string[0]
                 };
                 return Ok(response);
@@ -123,7 +124,7 @@ namespace Application.Presentation.Controllers
                 {
                     code = 200,
                     message = "Profissional atualizado com sucesso",
-                    data = profissionalVM,
+                    data = JsonConvert.SerializeObject(profissionalVM),
                     errors = new string[0]
                 };
 
@@ -145,7 +146,6 @@ namespace Application.Presentation.Controllers
                 {
                     code = 200,
                     message = "Profissional deletado com sucesso",
-                    data = null,
                     errors = new string[0]
                 };
                 return Ok(response);
@@ -156,7 +156,6 @@ namespace Application.Presentation.Controllers
                 {
                     code = 400,
                     message = ex.Message,
-                    data = null,
                     errors = new string[1] { "Não foi possível deletar o profissional" }
                 };
                 return BadRequest(response);

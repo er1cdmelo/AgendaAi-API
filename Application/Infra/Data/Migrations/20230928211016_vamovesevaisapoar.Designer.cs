@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Application.Migrations
 {
     [DbContext(typeof(AgendaContext))]
-    [Migration("20230924151600_meudeusdoceu")]
-    partial class meudeusdoceu
+    [Migration("20230928211016_vamovesevaisapoar")]
+    partial class vamovesevaisapoar
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,155 +24,6 @@ namespace Application.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Application.Data.Entities.Agendamento", b =>
-                {
-                    b.Property<int>("IdAgendamento")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAgendamento"));
-
-                    b.Property<string>("DsServico")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("varchar");
-
-                    b.Property<DateTimeOffset>("DtAgendamento")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("DtRegistro")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("IdCliente")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdDataHora")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdProfissional")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar");
-
-                    b.HasKey("IdAgendamento");
-
-                    b.HasIndex("IdCliente");
-
-                    b.HasIndex("IdDataHora")
-                        .IsUnique();
-
-                    b.HasIndex("IdProfissional");
-
-                    b.ToTable("Agendamento");
-                });
-
-            modelBuilder.Entity("Application.Data.Entities.Cliente", b =>
-                {
-                    b.Property<int>("IdCliente")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCliente"));
-
-                    b.Property<string>("Cidade")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar");
-
-                    b.Property<string>("Cpf")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("varchar");
-
-                    b.Property<DateTimeOffset>("DtNascimento")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("varchar");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar");
-
-                    b.Property<string>("Sexo")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .HasColumnType("varchar");
-
-                    b.HasKey("IdCliente");
-
-                    b.HasIndex("IdUsuario")
-                        .IsUnique();
-
-                    b.ToTable("Cliente");
-                });
-
-            modelBuilder.Entity("Application.Data.Entities.HorarioDisponivel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("DtHora")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("IdProfissional")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdProfissional");
-
-                    b.ToTable("HorarioDisponivel");
-                });
-
-            modelBuilder.Entity("Application.Data.Entities.Preferencia", b =>
-                {
-                    b.Property<int>("IdPreferencia")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPreferencia"));
-
-                    b.Property<string>("CdPreferencia")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar");
-
-                    b.Property<string>("DsPreferencia")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("varchar");
-
-                    b.Property<int>("IdTipoPreferencia")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ValorPreferencia")
-                        .IsRequired()
-                        .HasMaxLength(180)
-                        .HasColumnType("varchar");
-
-                    b.HasKey("IdPreferencia");
-
-                    b.ToTable("Preferencia");
-                });
 
             modelBuilder.Entity("Application.Data.Entities.Profissional", b =>
                 {
@@ -272,7 +123,156 @@ namespace Application.Migrations
                     b.ToTable("UserToken");
                 });
 
-            modelBuilder.Entity("Application.Data.Entities.Usuario", b =>
+            modelBuilder.Entity("Application.Domain.Entities.Agendamento", b =>
+                {
+                    b.Property<int>("IdAgendamento")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAgendamento"));
+
+                    b.Property<string>("DsServico")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar");
+
+                    b.Property<DateTimeOffset>("DtAgendamento")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DtRegistro")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("IdCliente")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdDataHora")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProfissional")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar");
+
+                    b.HasKey("IdAgendamento");
+
+                    b.HasIndex("IdCliente");
+
+                    b.HasIndex("IdDataHora")
+                        .IsUnique();
+
+                    b.HasIndex("IdProfissional");
+
+                    b.ToTable("Agendamento");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Cliente", b =>
+                {
+                    b.Property<int>("IdCliente")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCliente"));
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Cpf")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar");
+
+                    b.Property<DateTimeOffset>("DtNascimento")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Sexo")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("varchar");
+
+                    b.HasKey("IdCliente");
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
+
+                    b.ToTable("Cliente");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.HorarioDisponivel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("DtHora")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("IdProfissional")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdProfissional");
+
+                    b.ToTable("HorarioDisponivel");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Preferencia", b =>
+                {
+                    b.Property<int>("IdPreferencia")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPreferencia"));
+
+                    b.Property<string>("CdPreferencia")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("DsPreferencia")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar");
+
+                    b.Property<int>("IdTipoPreferencia")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ValorPreferencia")
+                        .IsRequired()
+                        .HasMaxLength(180)
+                        .HasColumnType("varchar");
+
+                    b.HasKey("IdPreferencia");
+
+                    b.ToTable("Preferencia");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("IdUsuario")
                         .ValueGeneratedOnAdd()
@@ -308,52 +308,9 @@ namespace Application.Migrations
                     b.ToTable("Usuario");
                 });
 
-            modelBuilder.Entity("Application.Data.Entities.Agendamento", b =>
-                {
-                    b.HasOne("Application.Data.Entities.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdCliente");
-
-                    b.HasOne("Application.Data.Entities.HorarioDisponivel", "HorarioDisponivel")
-                        .WithOne()
-                        .HasForeignKey("Application.Data.Entities.Agendamento", "IdDataHora");
-
-                    b.HasOne("Application.Data.Entities.Profissional", "Profissional")
-                        .WithMany()
-                        .HasForeignKey("IdProfissional");
-
-                    b.Navigation("HorarioDisponivel");
-
-                    b.Navigation("Profissional");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Application.Data.Entities.Cliente", b =>
-                {
-                    b.HasOne("Application.Data.Entities.Usuario", "Usuario")
-                        .WithOne()
-                        .HasForeignKey("Application.Data.Entities.Cliente", "IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Application.Data.Entities.HorarioDisponivel", b =>
-                {
-                    b.HasOne("Application.Data.Entities.Profissional", "Profissional")
-                        .WithMany("HorariosDisponiveis")
-                        .HasForeignKey("IdProfissional")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profissional");
-                });
-
             modelBuilder.Entity("Application.Data.Entities.Profissional", b =>
                 {
-                    b.HasOne("Application.Data.Entities.Usuario", "Usuario")
+                    b.HasOne("Application.Domain.Entities.Usuario", "Usuario")
                         .WithOne("Profissional")
                         .HasForeignKey("Application.Data.Entities.Profissional", "IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -362,12 +319,60 @@ namespace Application.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("Application.Domain.Entities.Agendamento", b =>
+                {
+                    b.HasOne("Application.Domain.Entities.Cliente", "Cliente")
+                        .WithMany("Agendamentos")
+                        .HasForeignKey("IdCliente");
+
+                    b.HasOne("Application.Domain.Entities.HorarioDisponivel", "HorarioDisponivel")
+                        .WithOne()
+                        .HasForeignKey("Application.Domain.Entities.Agendamento", "IdDataHora");
+
+                    b.HasOne("Application.Data.Entities.Profissional", "Profissional")
+                        .WithMany("Agendamentos")
+                        .HasForeignKey("IdProfissional");
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("HorarioDisponivel");
+
+                    b.Navigation("Profissional");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Cliente", b =>
+                {
+                    b.HasOne("Application.Domain.Entities.Usuario", "Usuario")
+                        .WithOne()
+                        .HasForeignKey("Application.Domain.Entities.Cliente", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.HorarioDisponivel", b =>
+                {
+                    b.HasOne("Application.Data.Entities.Profissional", "Profissional")
+                        .WithMany("HorariosDisponiveis")
+                        .HasForeignKey("IdProfissional");
+
+                    b.Navigation("Profissional");
+                });
+
             modelBuilder.Entity("Application.Data.Entities.Profissional", b =>
                 {
+                    b.Navigation("Agendamentos");
+
                     b.Navigation("HorariosDisponiveis");
                 });
 
-            modelBuilder.Entity("Application.Data.Entities.Usuario", b =>
+            modelBuilder.Entity("Application.Domain.Entities.Cliente", b =>
+                {
+                    b.Navigation("Agendamentos");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Usuario", b =>
                 {
                     b.Navigation("Profissional")
                         .IsRequired();

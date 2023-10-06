@@ -5,7 +5,7 @@
 namespace Application.Migrations
 {
     /// <inheritdoc />
-    public partial class AlterandoIdProfissional : Migration
+    public partial class Index_Cliente_Usuario : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

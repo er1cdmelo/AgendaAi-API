@@ -8,7 +8,7 @@ namespace Application.Infra.DTO
         {
             DsServico = string.Empty;
             Status = "Pendente";
-            UsuarioTO = new UsuarioTO();
+            ClienteTO = new ClienteTO();
             ProfissionalTO = new ProfissionalTO();
             HorarioDisponivelTO = new HorarioDisponivelTO();
         }
@@ -19,8 +19,8 @@ namespace Application.Infra.DTO
         public DateTimeOffset DtAgendamento { get; set; }
         public string Status { get; set; }
         public string DsServico { get; set; }
-        public virtual UsuarioTO UsuarioTO { get; set; }
-        public virtual ProfissionalTO ProfissionalTO { get; set; }
-        public virtual HorarioDisponivelTO HorarioDisponivelTO { get; set; }
+        public ClienteTO ClienteTO { get; set; }
+        public ProfissionalTO ProfissionalTO { get; set; }
+        public HorarioDisponivelTO HorarioDisponivelTO { get; set; }
     }
 }

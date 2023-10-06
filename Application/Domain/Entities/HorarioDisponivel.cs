@@ -1,4 +1,5 @@
-﻿using Application.Models;
+﻿using Application.Data.Entities;
+using Application.Models;
 
 namespace Application.Domain.Entities
 {
@@ -12,5 +13,6 @@ namespace Application.Domain.Entities
         public int IdProfissional { get; set; }
         public DateTimeOffset DtHora { get; set; }
         public string Status { get; set; }
+        public virtual Profissional Profissional { get; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Application.Data.Global;
-using Application.ViewModels;
+﻿using Application.ViewModels;
 using Application.Data.Repositories;
 using Application.Domain.Entities;
 using Application.Data.Entities;
+using Application.Application.Global;
 
 namespace Application.Application.AppServices
 {
