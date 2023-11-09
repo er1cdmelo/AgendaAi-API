@@ -148,6 +148,9 @@ namespace Application.Migrations
                     b.Property<int>("IdProfissional")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdServico")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -160,7 +163,24 @@ namespace Application.Migrations
 
                     b.HasIndex("IdProfissional");
 
+                    b.HasIndex("IdServico");
+
                     b.ToTable("Agendamento");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Associations.ProfissionalServico", b =>
+                {
+                    b.Property<int>("IdProfissional")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdServico")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdProfissional", "IdServico");
+
+                    b.HasIndex("IdServico");
+
+                    b.ToTable("ProfissionalServico");
                 });
 
             modelBuilder.Entity("Application.Domain.Entities.Cliente", b =>
@@ -241,6 +261,28 @@ namespace Application.Migrations
                     b.ToTable("HorarioDisponivel");
                 });
 
+            modelBuilder.Entity("Application.Domain.Entities.Integration.Firebase.FcmToken", b =>
+                {
+                    b.Property<int>("IdFcmToken")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFcmToken"));
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("varchar");
+
+                    b.HasKey("IdFcmToken");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("FcmToken");
+                });
+
             modelBuilder.Entity("Application.Domain.Entities.Preferencia", b =>
                 {
                     b.Property<int>("IdPreferencia")
@@ -270,6 +312,32 @@ namespace Application.Migrations
                     b.HasKey("IdPreferencia");
 
                     b.ToTable("Preferencia");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Servico", b =>
+                {
+                    b.Property<int>("IdServico")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdServico"));
+
+                    b.Property<string>("DsServico")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("NmServico")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
+
+                    b.Property<double>("VlServico")
+                        .HasColumnType("float");
+
+                    b.HasKey("IdServico");
+
+                    b.ToTable("Servico");
                 });
 
             modelBuilder.Entity("Application.Domain.Entities.Usuario", b =>
@@ -333,11 +401,36 @@ namespace Application.Migrations
                         .WithMany("Agendamentos")
                         .HasForeignKey("IdProfissional");
 
+                    b.HasOne("Application.Domain.Entities.Servico", "Servico")
+                        .WithMany("Agendamentos")
+                        .HasForeignKey("IdServico");
+
                     b.Navigation("Cliente");
 
                     b.Navigation("HorarioDisponivel");
 
                     b.Navigation("Profissional");
+
+                    b.Navigation("Servico");
+                });
+
+            modelBuilder.Entity("Application.Domain.Entities.Associations.ProfissionalServico", b =>
+                {
+                    b.HasOne("Application.Data.Entities.Profissional", "Profissional")
+                        .WithMany("ProfissionalServicos")
+                        .HasForeignKey("IdProfissional")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Application.Domain.Entities.Servico", "Servico")
+                        .WithMany("ServicoProfissionais")
+                        .HasForeignKey("IdServico")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profissional");
+
+                    b.Navigation("Servico");
                 });
 
             modelBuilder.Entity("Application.Domain.Entities.Cliente", b =>
@@ -360,11 +453,22 @@ namespace Application.Migrations
                     b.Navigation("Profissional");
                 });
 
+            modelBuilder.Entity("Application.Domain.Entities.Integration.Firebase.FcmToken", b =>
+                {
+                    b.HasOne("Application.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("FcmToken")
+                        .HasForeignKey("IdUsuario");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Application.Data.Entities.Profissional", b =>
                 {
                     b.Navigation("Agendamentos");
 
                     b.Navigation("HorariosDisponiveis");
+
+                    b.Navigation("ProfissionalServicos");
                 });
 
             modelBuilder.Entity("Application.Domain.Entities.Cliente", b =>
@@ -372,10 +476,19 @@ namespace Application.Migrations
                     b.Navigation("Agendamentos");
                 });
 
+            modelBuilder.Entity("Application.Domain.Entities.Servico", b =>
+                {
+                    b.Navigation("Agendamentos");
+
+                    b.Navigation("ServicoProfissionais");
+                });
+
             modelBuilder.Entity("Application.Domain.Entities.Usuario", b =>
                 {
                     b.Navigation("Cliente")
                         .IsRequired();
+
+                    b.Navigation("FcmToken");
 
                     b.Navigation("Profissional")
                         .IsRequired();
