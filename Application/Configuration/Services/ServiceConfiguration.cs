@@ -10,6 +10,7 @@ using Application.Presentation.Controllers;
 using Application.Application.AppServices;
 using Application.Application.Data.Mapper;
 using Application.Infra.Data.Repositories;
+using Application.Application.Mapper;
 
 namespace Application.Configuration.Services
 {
@@ -40,6 +41,7 @@ namespace Application.Configuration.Services
                 mc.AddProfile(new HorarioDisponivelProfile());
                 mc.AddProfile(new UserTokenProfile());
                 mc.AddProfile(new ClienteProfile());
+                mc.AddProfile(new ServicoProfile());
             });
             services.AddSingleton(mapper.CreateMapper());
 
@@ -50,6 +52,7 @@ namespace Application.Configuration.Services
             services.AddScoped<TokenRepository>();
             services.AddScoped<AgendamentoRepository>();
             services.AddScoped<ClienteRepository>();
+            services.AddScoped<ServicoRepository>();
 
             // Utils
             services.AddScoped<SettingsManager>();
@@ -64,12 +67,14 @@ namespace Application.Configuration.Services
             services.AddScoped<AgendamentoAppServices>();
             services.AddScoped<TokenAppServices>();
             services.AddScoped<ClienteAppServices>();
+            services.AddScoped<ServicoAppServices>();
 
             // Controllers
             services.AddScoped<ProfissionalController>();
             services.AddScoped<UsuarioController>();
             services.AddScoped<AgendamentoController>();
             services.AddScoped<ClienteController>();
+            services.AddScoped<ServicoController>();
         }
     }
 }

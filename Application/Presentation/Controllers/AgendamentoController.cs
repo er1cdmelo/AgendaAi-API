@@ -59,6 +59,37 @@ namespace Application.Presentation.Controllers
             }
         }
 
+        [HttpPost("Registrar")]
+        public IActionResult Registrar(AgendamentoTO agendamentoTO)
+        {
+            try
+            {
+                List<string> erros = _agendamentoApp.Salvar(agendamentoTO);
+                if (erros.Any())
+                {
+                    AiResponse response = new AiResponse()
+                    {
+                        message = "Erro ao registrar agendamento",
+                        code = 400,
+                        errors = erros.ToArray()
+                    };
+                    return BadRequest(response);
+                }
+
+                AiResponse responseSuccess = new AiResponse()
+                {
+                    message = "Agendamento registrado com sucesso!",
+                    code = 200
+                };
+                return Ok(responseSuccess);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         #region Horario Disponivel
         [HttpGet("HorarioDisponivel")]
         public IActionResult BuscarHorariosDisponiveis(int idProfissional)
