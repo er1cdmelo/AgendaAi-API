@@ -1,4 +1,5 @@
 ﻿using Application.Application.Global;
+using Application.Data.Entities;
 using Application.Domain.Entities;
 using Application.Infra.Data.Repositories;
 using Application.Infra.DTO;
@@ -60,6 +61,12 @@ namespace Application.Application.AppServices
             try
             {
                 Servico servico = _mapper.Map<Servico>(servicoTO);
+                servico.ProfissionalServicos = servicoTO.Profissionais.Select(p => new ProfissionalServico
+                {
+                    IdProfissional = p,
+                    IdServico = servicoTO.IdServico
+                }).ToList();
+
                 return _repository.Atualizar(servico);
             }
             catch (Exception)
@@ -79,5 +86,19 @@ namespace Application.Application.AppServices
                 throw;
             }
         }
+
+        #region Profissional
+        public List<Profissional> BuscarProfissionais(int idServico)
+        {
+            try
+            {
+                return _repository.BuscarProfissionais(idServico);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
     }
 }

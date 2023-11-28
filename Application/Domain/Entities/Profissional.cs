@@ -16,6 +16,7 @@ namespace Application.Data.Entities
             ImagemPerfil = string.Empty;
             HorariosDisponiveis = new List<HorarioDisponivel>();
             Agendamentos = new List<Agendamento>();
+            ProfissionalServicos = new List<ProfissionalServico>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // auto increment
@@ -30,6 +31,7 @@ namespace Application.Data.Entities
         public string? ImagemPerfil { get; set; }
         public virtual List<HorarioDisponivel> HorariosDisponiveis { get; set; }
         public virtual List<Agendamento> Agendamentos { get; set; }
+        public virtual List<ProfissionalServico> ProfissionalServicos { get; set; }
         public virtual Usuario Usuario { get; set; }
     }
 }

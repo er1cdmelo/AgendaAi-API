@@ -73,9 +73,9 @@ namespace Application.Presentation.Controllers
                 Usuario? usuario = _userApp.Login(loginReq);
                 return usuario != null ? Ok(usuario) : BadRequest("Usuário ou senha incorretos");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 

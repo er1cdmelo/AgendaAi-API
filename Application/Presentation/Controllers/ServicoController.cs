@@ -1,4 +1,5 @@
 ﻿using Application.Application.AppServices;
+using Application.Data.Entities;
 using Application.Domain.Entities;
 using Application.Infra.DTO;
 using Application.Models.Responses;
@@ -37,6 +38,20 @@ namespace Application.Presentation.Controllers
             {
                 List<Servico> servicos = _servicoApp.BuscarTodos();
                 return Ok(servicos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("BuscarProfissionais")]
+        public IActionResult BuscarProfissionais(int idServico)
+        {
+            try
+            {
+                List<Profissional> profissionais = _servicoApp.BuscarProfissionais(idServico);
+                return Ok(profissionais);
             }
             catch (Exception ex)
             {

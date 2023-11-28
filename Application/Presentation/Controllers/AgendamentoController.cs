@@ -19,6 +19,26 @@ namespace Application.Presentation.Controllers
             _profissionalApp = profissionalApp;
         }
 
+        [HttpGet("BuscarTodos")]
+        public IActionResult BuscarTodos()
+        {
+            try
+            {
+                List<AgendamentoTO> agendamentos = _agendamentoApp.BuscarTodos();
+                AiResponse response = new AiResponse()
+                {
+                    data = JsonConvert.SerializeObject(agendamentos),
+                    message = "Agendamentos encontrados com sucesso!",
+                    code = 200
+                };
+                return Ok(agendamentos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("BuscarPorProfissional")]
         public IActionResult BuscarPorProfissional(int idPessoa)
         {

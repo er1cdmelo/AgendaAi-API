@@ -33,7 +33,7 @@ namespace Application.Application.AppServices
             var usuario = _repository.BuscarPorEmail(loginReq.Email);
             if (string.IsNullOrEmpty(usuario.Username))
             {
-                return null;
+                throw new Exception("Usuário não encontrado");
             }
             bool senhaCorreta = PasswordAppServices.VerifyPassword(loginReq.Password, usuario.Senha);
             if (senhaCorreta)

@@ -24,6 +24,7 @@ namespace Application.Data
         public DbSet<HorarioDisponivel> HorarioDisponivel { get; set; }
         public DbSet<UserToken> UserToken { get; set; }
         public DbSet<Servico> Servico { get; set; }
+        public DbSet<ProfissionalServico> ProfissionalServico { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -219,6 +220,13 @@ namespace Application.Data
                 .IsRequired()
                 .HasColumnType("int");
 
+                a.Property(ag => ag.NmServico)
+                .HasColumnType("varchar")
+                .HasMaxLength(80);
+
+                a.Property(ag => ag.VlServico)
+                .HasColumnType("float");
+
                 a.HasOne(ag => ag.Profissional)
                 .WithMany(p => p.Agendamentos)
                 .HasForeignKey(ag => ag.IdProfissional)
@@ -275,6 +283,23 @@ namespace Application.Data
                 s.Property(se => se.VlServico)
                 .HasColumnType("float")
                 .IsRequired();
+
+                s.Property(se => se.FlAtivo)
+                .HasColumnType("bit")
+                .IsRequired();
+            });
+
+            modelBuilder.Entity<ProfissionalServico>(p =>
+            {
+                p.HasKey(ps => new { ps.IdProfissional, ps.IdServico });
+
+                p.HasOne(ps => ps.Profissional)
+                    .WithMany(p => p.ProfissionalServicos)
+                    .HasForeignKey(ps => ps.IdProfissional);
+
+                p.HasOne(ps => ps.Servico)
+                    .WithMany(s => s.ProfissionalServicos)
+                    .HasForeignKey(ps => ps.IdServico);
             });
 
             base.OnModelCreating(modelBuilder);

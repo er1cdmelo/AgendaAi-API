@@ -128,7 +128,7 @@ namespace Application.Application.AppServices
                 profissional.ImagemPerfil = profissionalVM.ImagemPerfil;
                 profissional.Usuario.Email = profissionalVM.Email;
                 profissional.Usuario.Username = profissionalVM.Username;
-
+                
                 _repository.Atualizar(profissional);
             }
             catch (Exception ex)
