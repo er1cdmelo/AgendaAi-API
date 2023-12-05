@@ -9,7 +9,8 @@ namespace Application.Application.Mapper
     {
         public ServicoProfile()
         {
-            CreateMap<Servico, ServicoTO>();
+            CreateMap<Servico, ServicoTO>()
+                .ForMember(dest => dest.Profissionais, opt => opt.MapFrom(src => src.ProfissionalServicos.Select(ps => ps.IdProfissional)));
             CreateMap<ServicoTO, Servico>();
         }
     }

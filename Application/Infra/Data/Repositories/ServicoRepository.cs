@@ -20,7 +20,26 @@ namespace Application.Infra.Data.Repositories
 
         public List<Servico> BuscarTodos()
         {
-            List<Servico> servicos = _context.Servico.Where(s => s.FlAtivo).ToList() ?? new List<Servico>();
+            List<Servico> servicos = _context.Servico
+                .Include(s => s.ProfissionalServicos)
+                .Where(s => s.FlAtivo)
+                .Select(s => new Servico()
+                {
+                    IdServico = s.IdServico,
+                    NmServico = s.NmServico,
+                    DsServico = s.DsServico,
+                    VlServico = s.VlServico,
+                    ProfissionalServicos = s.ProfissionalServicos.Select(ps => new ProfissionalServico()
+                    {
+                        IdProfissional = ps.IdProfissional,
+                        Profissional = new Profissional()
+                        {
+                            IdProfissional = ps.Profissional.IdProfissional,
+                            Nome = ps.Profissional.Nome,
+                        }
+                    }).ToList(),
+                })
+                .ToList() ?? new List<Servico>();
             return servicos;
         }
 
@@ -72,6 +91,7 @@ namespace Application.Infra.Data.Repositories
         public Servico Atualizar(Servico servicoAtt)
         {
             Servico servico = BuscarPorId(servicoAtt.IdServico);
+            servico.ProfissionalServicos.Clear();
             servico.NmServico = servicoAtt.NmServico;
             servico.DsServico = servicoAtt.DsServico;
             servico.VlServico = servicoAtt.VlServico;

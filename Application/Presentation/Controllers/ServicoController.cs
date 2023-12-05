@@ -3,6 +3,7 @@ using Application.Data.Entities;
 using Application.Domain.Entities;
 using Application.Infra.DTO;
 using Application.Models.Responses;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Presentation.Controllers
@@ -12,9 +13,11 @@ namespace Application.Presentation.Controllers
     public class ServicoController : ControllerBase
     {
         private readonly ServicoAppServices _servicoApp;
-        public ServicoController(ServicoAppServices servicoApp)
+        private readonly IMapper _mapper;
+        public ServicoController(ServicoAppServices servicoApp, IMapper mapper)
         {
             _servicoApp = servicoApp;
+            _mapper = mapper;
         }
 
         [HttpGet("BuscarPorId")]
@@ -36,7 +39,7 @@ namespace Application.Presentation.Controllers
         {
             try
             {
-                List<Servico> servicos = _servicoApp.BuscarTodos();
+                List<ServicoTO> servicos = _mapper.Map<List<ServicoTO>>(_servicoApp.BuscarTodos());
                 return Ok(servicos);
             }
             catch (Exception ex)
@@ -79,11 +82,21 @@ namespace Application.Presentation.Controllers
             try
             {
                 Servico servico = _servicoApp.Atualizar(servicoTO);
-                return Ok(servico);
+                AiResponse aiResponse = new AiResponse()
+                {
+                    code = 200,
+                    message = "Serviço atualizado com sucesso!"
+                };
+                return Ok(aiResponse);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                AiResponse aiResponse = new AiResponse()
+                {
+                    code = 400,
+                    message = ex.Message
+                };
+                return BadRequest(aiResponse);
             }
         }
 

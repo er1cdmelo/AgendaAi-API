@@ -61,6 +61,7 @@ namespace Application.Application.AppServices
             try
             {
                 Servico servico = _mapper.Map<Servico>(servicoTO);
+                
                 servico.ProfissionalServicos = servicoTO.Profissionais.Select(p => new ProfissionalServico
                 {
                     IdProfissional = p,
