@@ -11,12 +11,30 @@ namespace Application.Application.AppServices
     {
         private readonly AgendamentoRepository _repository;
         private readonly PreferenciaAppServices _prefApp;
+        private readonly ServicoAppServices _servicoApp;
         private readonly IMapper _mapper;
-        public AgendamentoAppServices(AgendamentoRepository repository, PreferenciaAppServices prefApp, IMapper mapper)
+        public AgendamentoAppServices(
+            AgendamentoRepository repository, 
+            PreferenciaAppServices prefApp, 
+            IMapper mapper, 
+            ServicoAppServices servicoApp)
         {
             _repository = repository;
             _prefApp = prefApp;
             _mapper = mapper;
+            _servicoApp = servicoApp;
+        }
+
+        public List<AgendamentoTO> BuscarTodos()
+        {
+            List<Agendamento> agendamentos = _repository.BuscarTodos();
+            List<AgendamentoTO> agendamentosTO = new List<AgendamentoTO>();
+            if (agendamentos != null && agendamentos.Any())
+            {
+                agendamentosTO = _mapper.Map<List<AgendamentoTO>>(agendamentos);
+            }
+
+            return agendamentosTO;
         }
 
         public List<AgendamentoTO> BuscarListaProfissional(int idProfissional)
@@ -88,13 +106,17 @@ namespace Application.Application.AppServices
                 Agendamento agendamento = _mapper.Map<Agendamento>(agendamentoTO);
                 HorarioDisponivel? horario = _repository.BuscarHorarioPorData
                     (agendamentoTO.DtAgendamento, agendamentoTO.IdProfissional);
+                Servico? servico = _servicoApp.BuscarPorId(agendamentoTO.IdServico);
 
-                if(horario != null)
+                if(horario != null && servico != null)
                 {
                     agendamento.IdDataHora = horario.Id;
                     agendamento.DtRegistro = DateTimeOffset.Now;
                     agendamento.Status = _prefApp.BuscarPorCodigo("INICIA_ATENDIMENTO_CONFIRMADO").Equals("1") ?
                         (int) Enums.StatusAgendamento.Confirmado : (int) Enums.StatusAgendamento.Pendente;
+
+                    agendamento.VlServico = servico.VlServico;
+                    agendamento.NmServico = servico.NmServico;
                     agendamento = _repository.CriarAgendamento(agendamento);
                 } else
                 {

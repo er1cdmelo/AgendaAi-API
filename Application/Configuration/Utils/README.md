@@ -26,6 +26,6 @@ O horario disponivel é a entidade que representa um horario que um profissional 
 - [x] Criar horario disponivel
 - [x] Criar cliente
 - [x] Relacionar profissional com agendamentos e horarios disponiveis
-- [ ] Criar serviços e relacionar com agendamentos
+- [x] Criar serviços e relacionar com agendamentos
 - [ ] Criar endereço
 - [ ] Criar interfaces

@@ -23,6 +23,8 @@ namespace Application.Data
         public DbSet<Agendamento> Agendamento { get; set; }
         public DbSet<HorarioDisponivel> HorarioDisponivel { get; set; }
         public DbSet<UserToken> UserToken { get; set; }
+        public DbSet<Servico> Servico { get; set; }
+        public DbSet<ProfissionalServico> ProfissionalServico { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -218,9 +220,12 @@ namespace Application.Data
                 .IsRequired()
                 .HasColumnType("int");
 
-                a.Property(ag => ag.DsServico)
+                a.Property(ag => ag.NmServico)
                 .HasColumnType("varchar")
                 .HasMaxLength(80);
+
+                a.Property(ag => ag.VlServico)
+                .HasColumnType("float");
 
                 a.HasOne(ag => ag.Profissional)
                 .WithMany(p => p.Agendamentos)
@@ -235,6 +240,11 @@ namespace Application.Data
                 a.HasOne(ag => ag.Cliente)
                 .WithMany(c => c.Agendamentos)
                 .HasForeignKey(ag => ag.IdCliente)
+                .IsRequired(false);
+
+                a.HasOne(ag => ag.Servico)
+                .WithOne()
+                .HasForeignKey<Agendamento>(ag => ag.IdServico)
                 .IsRequired(false);
             });
 
@@ -255,6 +265,41 @@ namespace Application.Data
                 .WithMany(p => p.HorariosDisponiveis)
                 .HasForeignKey(hd => hd.IdProfissional)
                 .IsRequired(false);
+            });
+
+            modelBuilder.Entity<Servico>(s =>
+            {
+                s.HasKey(se => se.IdServico);
+
+                s.Property(se => se.NmServico)
+                .IsRequired()
+                .HasColumnType("varchar")
+                .HasMaxLength(50);
+
+                s.Property(se => se.DsServico)
+                .HasColumnType("varchar")
+                .HasMaxLength(80);
+
+                s.Property(se => se.VlServico)
+                .HasColumnType("float")
+                .IsRequired();
+
+                s.Property(se => se.FlAtivo)
+                .HasColumnType("bit")
+                .IsRequired();
+            });
+
+            modelBuilder.Entity<ProfissionalServico>(p =>
+            {
+                p.HasKey(ps => new { ps.IdProfissional, ps.IdServico });
+
+                p.HasOne(ps => ps.Profissional)
+                    .WithMany(p => p.ProfissionalServicos)
+                    .HasForeignKey(ps => ps.IdProfissional);
+
+                p.HasOne(ps => ps.Servico)
+                    .WithMany(s => s.ProfissionalServicos)
+                    .HasForeignKey(ps => ps.IdServico);
             });
 
             base.OnModelCreating(modelBuilder);

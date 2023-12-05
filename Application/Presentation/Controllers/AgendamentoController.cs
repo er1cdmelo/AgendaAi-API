@@ -19,6 +19,26 @@ namespace Application.Presentation.Controllers
             _profissionalApp = profissionalApp;
         }
 
+        [HttpGet("BuscarTodos")]
+        public IActionResult BuscarTodos()
+        {
+            try
+            {
+                List<AgendamentoTO> agendamentos = _agendamentoApp.BuscarTodos();
+                AiResponse response = new AiResponse()
+                {
+                    data = JsonConvert.SerializeObject(agendamentos),
+                    message = "Agendamentos encontrados com sucesso!",
+                    code = 200
+                };
+                return Ok(agendamentos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("BuscarPorProfissional")]
         public IActionResult BuscarPorProfissional(int idPessoa)
         {
@@ -58,6 +78,37 @@ namespace Application.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("Registrar")]
+        public IActionResult Registrar(AgendamentoTO agendamentoTO)
+        {
+            try
+            {
+                List<string> erros = _agendamentoApp.Salvar(agendamentoTO);
+                if (erros.Any())
+                {
+                    AiResponse response = new AiResponse()
+                    {
+                        message = "Erro ao registrar agendamento",
+                        code = 400,
+                        errors = erros.ToArray()
+                    };
+                    return BadRequest(response);
+                }
+
+                AiResponse responseSuccess = new AiResponse()
+                {
+                    message = "Agendamento registrado com sucesso!",
+                    code = 200
+                };
+                return Ok(responseSuccess);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         #region Horario Disponivel
         [HttpGet("HorarioDisponivel")]

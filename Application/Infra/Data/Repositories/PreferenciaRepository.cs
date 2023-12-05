@@ -1,4 +1,5 @@
 ﻿using Application.Domain.Entities;
+using Application.Presentation.ViewModels;
 
 namespace Application.Data.Repositories
 {
@@ -12,6 +13,19 @@ namespace Application.Data.Repositories
         public PreferenciaRepository()
         {
             _context = new AgendaContext();
+        }
+
+        public List<Preferencia> BuscarTodos()
+        {
+            try
+            {
+                var preferencias = _context.Preferencia.ToList();
+                return preferencias;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public Preferencia BuscarPorCodigo(string cdPreferencia) 
         {
@@ -54,11 +68,17 @@ namespace Application.Data.Repositories
             }
         }
 
-        public void Atualizar(Preferencia preferencia)
+        public void Atualizar(List<PreferenciaVM> prefsVm)
         {
             try
             {
-                _context.Preferencia.Update(preferencia);
+                List<int> idsPreferencia = prefsVm.Select(p => p.IdPreferencia).ToList();
+                List<Preferencia> preferencias = _context.Preferencia.Where(p => idsPreferencia.Contains(p.IdPreferencia)).ToList();
+                foreach (Preferencia pref in preferencias)
+                {
+                    PreferenciaVM prefVm = prefsVm.FirstOrDefault(p => p.IdPreferencia == pref.IdPreferencia) ?? new PreferenciaVM();
+                    pref.ValorPreferencia = prefVm.ValorPreferencia;
+                }
                 _context.SaveChanges();
             }
             catch (Exception)

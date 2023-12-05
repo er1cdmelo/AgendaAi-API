@@ -13,6 +13,20 @@ namespace Application.Data.Repositories
             _context = context;
         }
 
+        public List<Agendamento> BuscarTodos() 
+        {
+            try
+            {
+                List<Agendamento> agendamentos = _context.Agendamento.Include(a => a.Cliente).ToList();
+                agendamentos.ForEach(a => a.Cliente.Agendamentos.Clear());
+                return agendamentos;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public List<Agendamento> BuscarAgendamentosProfissional(int idProfissional)
         {
             try

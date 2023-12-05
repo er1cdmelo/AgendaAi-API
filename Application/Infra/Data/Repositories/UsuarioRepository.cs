@@ -22,7 +22,7 @@ namespace Application.Data.Repositories
         public Usuario BuscarPorId(int idUsuario)
         {
             // O nome da tabela de Usuarios é Usuario
-            Usuario usuario = _context.Usuario.Include(u => u.Profissional).Include(u => u.Cliente)
+            Usuario usuario = _context.Usuario.AsNoTracking().Include(u => u.Profissional).Include(u => u.Cliente)
                 .FirstOrDefault(u => u.IdUsuario == idUsuario) ?? new Usuario();
             if(usuario.Cliente != null)
             {
@@ -37,7 +37,7 @@ namespace Application.Data.Repositories
 
         public Usuario BuscarPorEmail(string email)
         {
-            Usuario usuario = _context.Usuario.Include(u => u.Profissional).Include(u => u.Cliente).FirstOrDefault() ?? new Usuario();
+            Usuario usuario = _context.Usuario.AsNoTracking().Where(u => u.Email == email).Include(u => u.Profissional).Include(u => u.Cliente).FirstOrDefault() ?? new Usuario();
             if (usuario.Cliente != null)
             {
                 usuario.Cliente.Usuario = null;

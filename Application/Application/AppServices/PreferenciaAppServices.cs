@@ -1,6 +1,7 @@
 ﻿using Application.Data;
 using Application.Data.Repositories;
 using Application.Domain.Entities;
+using Application.Presentation.ViewModels;
 
 namespace Application.Application.AppServices
 {
@@ -17,9 +18,14 @@ namespace Application.Application.AppServices
             _repository = new PreferenciaRepository();
         }
 
+        public List<Preferencia> BuscarTodos()
+        {
+            List<Preferencia> preferencias = _repository.BuscarTodos();
+            return preferencias;
+        }
+
         public string BuscarPorCodigo(string cdPrefencia)
         {
-            // O nome da tabela de Preferencias é Preferencia
             Preferencia preferencia = _repository.BuscarPorCodigo(cdPrefencia);
             return preferencia.ValorPreferencia;
         }
@@ -43,11 +49,11 @@ namespace Application.Application.AppServices
             }
         }
 
-        public void Atualizar(Preferencia preferencia)
+        public void Atualizar(List<PreferenciaVM> prefsVm)
         {
             try
             {
-                _repository.Atualizar(preferencia);
+                _repository.Atualizar(prefsVm);
             }
             catch (Exception)
             {
